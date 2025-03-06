@@ -39,7 +39,7 @@ func (s *StandAloneStorage) Stop() error {
 
 func (s *StandAloneStorage) Reader(ctx *kvrpcpb.Context) (storage.StorageReader, error) {
 	return &StandAloneStorageReader{
-		txn: s.db.NewTransaction(true),
+		txn: s.db.NewTransaction(false),
 	}, nil
 }
 
