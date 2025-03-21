@@ -18,6 +18,7 @@ import (
 	"errors"
 
 	pb "github.com/pingcap-incubator/tinykv/proto/pkg/eraftpb"
+	"golang.org/x/text/cases"
 )
 
 // None is a placeholder node ID used when there is no leader.
@@ -164,8 +165,55 @@ func newRaft(c *Config) *Raft {
 	if err := c.validate(); err != nil {
 		panic(err.Error())
 	}
-	// Your Code Here (2A).
-	return nil
+	log := newLog(c.Storage)
+	if c.Applied > 0{
+		log.applied=c.Applied
+	}
+	hs, cs, err := c.Storage.InitialState()
+	if err != nil {
+		panic(err.Error())
+	}
+	if c.peers == nil {
+		c.peers = cs.Nodes
+	}
+	prs := make(map[uint64]*Progress)
+	for _, pr := range c.peers {
+		prs[pr] = &Progress{
+			Next:  0,
+			Match: 0,
+		}
+	}
+	
+
+	raft := &Raft{
+		id:               c.ID,
+		Term:             hs.Term,
+		Vote:             hs.Vote,
+		RaftLog:          log,
+		Prs:              prs,
+		State:            StateFollower,
+		votes:            make(map[uint64]bool),
+		Lead:             None,
+		heartbeatTimeout: c.HeartbeatTick,
+		electionTimeout:  c.ElectionTick,
+		leadTransferee:   0,
+	}
+
+
+	return raft
+}
+
+
+
+func (r *Raft) reset(term uint64){
+	if r.Term != term{
+		r.Term=term
+		r.Vote=None
+	}
+	r.Lead = None
+	r.electionElapsed =0 
+	r.heartbeatElapsed = 0
+	
 }
 
 // sendAppend sends an append RPC with new entries (if any) and the
@@ -177,17 +225,46 @@ func (r *Raft) sendAppend(to uint64) bool {
 
 // sendHeartbeat sends a heartbeat RPC to the given peer.
 func (r *Raft) sendHeartbeat(to uint64) {
-	// Your Code Here (2A).
+	r.Step(pb.Message{
+		MsgType: pb.MessageType_MsgHeartbeat,
+	})
 }
 
 // tick advances the internal logical clock by a single tick.
 func (r *Raft) tick() {
-	// Your Code Here (2A).
+	r.electionElapsed++
+	switch r.State {
+	case StateFollower:
+		if r.electionElapsed >= r.electionTimeout{
+			r.electionElapsed = 0
+			err := r.Step(pb.Message{
+				MsgType: pb.MessageType_MsgHup,
+			})
+			if err != nil{
+				return
+			}
+		}
+	case StateCandidate:
+		if r.electionElapsed >= r.electionTimeout{
+			r.electionElapsed = 0
+			err := r.Step(pb.Message{
+				MsgType: pb.MessageType_MsgHup,
+			})
+			if err != nil{
+				return
+			}
+		}
+	case StateLeader:
+		r.heartbeatElapsed++
+
+	}
+	
 }
 
 // becomeFollower transform this peer's state to Follower
 func (r *Raft) becomeFollower(term uint64, lead uint64) {
-	// Your Code Here (2A).
+	r.State=StateFollower
+	r.
 }
 
 // becomeCandidate transform this peer's state to candidate
