@@ -60,7 +60,6 @@ type RaftLog struct {
 // newLog returns log using the given storage. It recovers the log
 // to the state that it just commits and applies the latest snapshot.
 func newLog(storage Storage) *RaftLog {
-	// Your Code Here (2A).
 	if storage == nil {
 		log.Panic("storage must not be nil")
 	}
@@ -93,20 +92,35 @@ func (l *RaftLog) maybeCompact() {
 // note, exclude any dummy entries from the return value.
 // note, this is one of the test stub functions you need to implement.
 func (l *RaftLog) allEntries() []pb.Entry {
-	// Your Code Here (2A).
-	return nil
+	return l.entries
 }
 
 // unstableEntries return all the unstable entries
 func (l *RaftLog) unstableEntries() []pb.Entry {
-	// Your Code Here (2A).
-	return nil
+	if len(l.entries) > 0 {
+		firstIndex := l.FirstIndex()
+		if l.stabled < firstIndex {
+			return l.entries
+		}
+		if l.stabled-firstIndex+1 >= uint64(len(l.entries)) {
+			return make([]pb.Entry, 0)
+		}
+		return l.entries[l.stabled-firstIndex+1:]
+	}
+	return make([]pb.Entry, 0)
 }
 
 // nextEnts returns all the committed but not applied entries
 func (l *RaftLog) nextEnts() (ents []pb.Entry) {
-	// Your Code Here (2A).
-	return nil
+	if len(l.entries) > 0 {
+		firstIndex := l.FirstIndex()
+		appliedIndex := l.applied
+		committedIndex := l.committed
+		if appliedIndex < committedIndex && appliedIndex >= firstIndex-1 && committedIndex >= firstIndex-1 && committedIndex <= l.LastIndex() {
+			return l.entries[appliedIndex-firstIndex+1 : committedIndex-firstIndex+1]
+		}
+	}
+	return make([]pb.Entry, 0)
 }
 
 func (l *RaftLog) FirstIndex() uint64 {
@@ -125,12 +139,26 @@ func (l *RaftLog) commitTo(toCommit uint64) {
 
 // LastIndex return the last index of the log entries
 func (l *RaftLog) LastIndex() uint64 {
-	// Your Code Here (2A).
-	return 0
+	if len(l.entries) > 0 {
+		return l.entries[len(l.entries)-1].Index
+	}
+	index, _ := l.storage.LastIndex()
+	return index
 }
 
 // Term return the term of the entry in the given index
 func (l *RaftLog) Term(i uint64) (uint64, error) {
-	// Your Code Here (2A).
-	return 0, nil
+	if len(l.entries) > 0 {
+		firstIndex := l.FirstIndex()
+		lastIndex := l.LastIndex()
+		if i >= firstIndex && i <= lastIndex {
+			return l.entries[i-firstIndex].Term, nil
+		}
+	}
+
+	term, err := l.storage.Term(i)
+	if err != nil {
+		return 0, err
+	}
+	return term, nil
 }

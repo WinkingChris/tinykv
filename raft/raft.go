@@ -257,7 +257,6 @@ func (r *Raft) reset(term uint64) {
 // sendAppend sends an append RPC with new entries (if any) and the
 // current commit index to the given peer. Returns true if a message was sent.
 func (r *Raft) sendAppend(to uint64) bool {
-	// Your Code Here (2A).
 	pr, ok := r.Prs[to]
 	if !ok {
 		return false
@@ -446,7 +445,6 @@ func (r *Raft) becomeLeader() {
 	}
 
 	r.updateCommitIndex()
-	// NOTE: Leader should propose a noop entry on its term
 }
 
 func (r *Raft) FollwerStep(m pb.Message) error {
@@ -548,6 +546,7 @@ func (r *Raft) LeaderStep(m pb.Message) error {
 	case pb.MessageType_MsgAppend:
 		r.handleAppendEntries(m)
 	case pb.MessageType_MsgAppendResponse:
+		r.handleAppendResponse(m)
 	case pb.MessageType_MsgRequestVote:
 		r.handleRequestVote(m)
 	case pb.MessageType_MsgRequestVoteResponse:
@@ -555,6 +554,7 @@ func (r *Raft) LeaderStep(m pb.Message) error {
 	case pb.MessageType_MsgHeartbeat:
 		r.handleHeartbeat(m)
 	case pb.MessageType_MsgHeartbeatResponse:
+		r.handleHeartbeatResponse(m)
 	case pb.MessageType_MsgTransferLeader:
 		if r.Lead != None {
 			m.To = r.Lead
@@ -570,7 +570,6 @@ func (r *Raft) LeaderStep(m pb.Message) error {
 // Step the entrance of handle message, see `MessageType`
 // on `eraftpb.proto` for what msgs should be handled
 func (r *Raft) Step(m pb.Message) error {
-	// Your Code Here (2A).
 	var err error
 	switch r.State {
 	case StateFollower:
@@ -602,16 +601,15 @@ func (r *Raft) updateCommitIndex() uint64 {
 	return r.RaftLog.committed
 }
 
-func (r *Raft) appendEntry(es []*pb.Entry) {
+func (r *Raft) appendEntry(entries []*pb.Entry) {
 	lastIndex := r.RaftLog.LastIndex()
-	for i := range es {
-		es[i].Term = r.Term
-		es[i].Index = lastIndex + 1 + uint64(i)
-		r.RaftLog.entries = append(r.RaftLog.entries, *es[i])
+	for i := range entries {
+		entries[i].Term = r.Term
+		entries[i].Index = lastIndex + 1 + uint64(i)
+		r.RaftLog.entries = append(r.RaftLog.entries, *entries[i])
 	}
 	r.Prs[r.id].Match = r.RaftLog.LastIndex()
 	r.Prs[r.id].Next = r.Prs[r.id].Match + 1
-	return
 }
 
 func (r *Raft) handlePropose(m pb.Message) {
@@ -679,7 +677,6 @@ func (r *Raft) sendAppendResponse(reject bool, to uint64, index uint64) {
 
 // handleAppendEntries handle AppendEntries RPC request
 func (r *Raft) handleAppendEntries(m pb.Message) {
-	// Your Code Here (2A).
 	if r.Term <= m.Term {
 		r.Term = m.Term
 		if r.State != StateFollower {
@@ -735,7 +732,6 @@ func (r *Raft) handleAppendEntries(m pb.Message) {
 	if m.Commit > r.RaftLog.committed {
 		r.RaftLog.committed = min(m.Commit, r.RaftLog.lastAppend)
 	}
-
 }
 
 func (r *Raft) handleAppendResponse(m pb.Message) {
@@ -772,6 +768,19 @@ func (r *Raft) sendHeartbeatResponse(to uint64) {
 		Commit:  r.RaftLog.committed,
 	}
 	r.msgs = append(r.msgs, msg)
+}
+
+func (r *Raft) handleHeartbeatResponse(m pb.Message) {
+	if r.Term < m.Term {
+		r.Term = m.Term
+		if r.State != StateFollower {
+			r.becomeFollower(r.Term, None)
+		}
+	}
+	r.live[m.From] = true
+	if m.Commit < r.RaftLog.committed {
+		r.sendAppend(m.From)
+	}
 }
 
 // handleHeartbeat handle Heartbeat RPC request
