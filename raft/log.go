@@ -14,13 +14,18 @@
 
 package raft
 
-import pb "github.com/pingcap-incubator/tinykv/proto/pkg/eraftpb"
+import (
+	"log"
+	"math"
+
+	pb "github.com/pingcap-incubator/tinykv/proto/pkg/eraftpb"
+)
 
 // RaftLog manage the log entries, its struct look like:
 //
-//  snapshot/first.....applied....committed....stabled.....last
-//  --------|------------------------------------------------|
-//                            log entries
+//	snapshot/first.....applied....committed....stabled.....last
+//	--------|------------------------------------------------|
+//	                          log entries
 //
 // for simplify the RaftLog implement should manage all log entries
 // that not truncated
@@ -49,14 +54,32 @@ type RaftLog struct {
 	// (Used in 2C)
 	pendingSnapshot *pb.Snapshot
 
-	// Your Data Here (2A).
+	lastAppend uint64
 }
 
 // newLog returns log using the given storage. It recovers the log
 // to the state that it just commits and applies the latest snapshot.
 func newLog(storage Storage) *RaftLog {
 	// Your Code Here (2A).
-	return nil
+	if storage == nil {
+		log.Panic("storage must not be nil")
+	}
+	log := &RaftLog{
+		storage: storage,
+	}
+
+	firstIndex, _ := storage.FirstIndex()
+	lastIndex, _ := storage.LastIndex()
+	entries, _ := storage.Entries(firstIndex, lastIndex+1)
+
+	hardState, _, _ := storage.InitialState()
+	log.committed = hardState.Commit
+	log.applied = firstIndex - 1
+	log.stabled = lastIndex
+	log.entries = entries
+	log.pendingSnapshot = nil
+	log.lastAppend = math.MaxInt64
+	return log
 }
 
 // We need to compact the log entries in some point of time like
@@ -84,6 +107,20 @@ func (l *RaftLog) unstableEntries() []pb.Entry {
 func (l *RaftLog) nextEnts() (ents []pb.Entry) {
 	// Your Code Here (2A).
 	return nil
+}
+
+func (l *RaftLog) FirstIndex() uint64 {
+	if len(l.entries) == 0 {
+		index, _ := l.storage.FirstIndex()
+		return index
+	}
+	return l.entries[0].Index
+}
+
+func (l *RaftLog) commitTo(toCommit uint64) {
+	if l.committed < toCommit {
+		l.committed = toCommit
+	}
 }
 
 // LastIndex return the last index of the log entries
