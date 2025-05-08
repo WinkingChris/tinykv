@@ -165,7 +165,6 @@ func (rn *RawNode) Ready() Ready {
 
 	if !isHardStateEqual(hardState, rn.preHardState) {
 		ready.HardState = hardState
-		rn.preHardState = hardState
 	}
 
 	if !IsEmptySnap(r.RaftLog.pendingSnapshot) {

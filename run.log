@@ -1,0 +1,578 @@
+rm -rf /tmp/*test-raftstore*
+GO111MODULE=on go test -v --count=1 --parallel=1 -p=1 ./kv/test_raftstore -run ^TestBasic2B|| true
+=== RUN   TestBasic2B
+2025/05/05 22:25:48.591473 node.go:193: [0;37m[info] start raft store node, storeID: 2[0m
+2025/05/05 22:25:48.591791 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 >  create peer with ID 2[0m
+2025/05/05 22:25:48.591837 raftstore.go:174: [0;37m[info] start store 2, region_count 1, tombstone_count 0, takes 256.505µs[0m
+2025/05/05 22:25:48.592613 node.go:193: [0;37m[info] start raft store node, storeID: 3[0m
+2025/05/05 22:25:48.592676 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 >  create peer with ID 3[0m
+2025/05/05 22:25:48.592694 raftstore.go:174: [0;37m[info] start store 3, region_count 1, tombstone_count 0, takes 35.045µs[0m
+2025/05/05 22:25:48.593372 node.go:193: [0;37m[info] start raft store node, storeID: 4[0m
+2025/05/05 22:25:48.593424 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 >  create peer with ID 4[0m
+2025/05/05 22:25:48.594005 raftstore.go:174: [0;37m[info] start store 4, region_count 1, tombstone_count 0, takes 596.572µs[0m
+2025/05/05 22:25:48.594043 node.go:193: [0;37m[info] start raft store node, storeID: 5[0m
+2025/05/05 22:25:48.594071 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 >  create peer with ID 5[0m
+2025/05/05 22:25:48.594082 raftstore.go:174: [0;37m[info] start store 5, region_count 1, tombstone_count 0, takes 22.064µs[0m
+2025/05/05 22:25:48.594705 node.go:193: [0;37m[info] start raft store node, storeID: 1[0m
+2025/05/05 22:25:48.594749 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 >  create peer with ID 1[0m
+2025/05/05 22:25:48.594764 raftstore.go:174: [0;37m[info] start store 1, region_count 1, tombstone_count 0, takes 25.418µs[0m
+2025/05/05 22:25:49 len = 1
+2025/05/05 22:25:49 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:49 len = 1
+2025/05/05 22:25:49 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:49 len = 1
+2025/05/05 22:25:49 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:49 len = 1
+2025/05/05 22:25:49 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:49 id=1 len = 0
+2025/05/05 22:25:49 id=1 len = 0
+2025/05/05 22:25:49 len = 0
+2025/05/05 22:25:49 i = 6, firstIndex = 6, lastIndex = 6
+panic: runtime error: index out of range [0] with length 0
+
+goroutine 293 [running]:
+github.com/pingcap-incubator/tinykv/raft.(*Raft).sendAppend(0xc17c308e10, 0x2)
+	/home/chris/code/tinykv/raft/raft.go:280 +0x530
+github.com/pingcap-incubator/tinykv/raft.(*Raft).handleAppendResponse(0xc17c308e10, {0x4, 0x1, 0x4, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:757 +0x31d
+github.com/pingcap-incubator/tinykv/raft.(*Raft).LeaderStep(0xc17c308e10, {0x4, 0x1, 0x4, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:552 +0x158
+github.com/pingcap-incubator/tinykv/raft.(*Raft).Step(0x0?, {0x4, 0x1, 0x4, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:583 +0x5d
+github.com/pingcap-incubator/tinykv/raft.(*RawNode).Step(0xc115dd0870, {0x4, 0x1, 0x4, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/rawnode.go:144 +0xd8
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).onRaftMsg(0xc0001afe20, 0xc17ca0a800)
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:745 +0x318
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).HandleMsg(0xc0001afe20, {0xc0001afec0?, 0x1?, {0xbb96c0?, 0xc17ca0a800?}})
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:513 +0x76
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*raftWorker).run(0xc071e28880, 0xc000031500, 0x0?)
+	/home/chris/code/tinykv/kv/raftstore/raft_worker.go:54 +0x485
+created by github.com/pingcap-incubator/tinykv/kv/raftstore.(*Raftstore).startWorkers in goroutine 14
+	/home/chris/code/tinykv/kv/raftstore/raftstore.go:270 +0x152
+FAIL	github.com/pingcap-incubator/tinykv/kv/test_raftstore	1.281s
+FAIL
+GO111MODULE=on go test -v --count=1 --parallel=1 -p=1 ./kv/test_raftstore -run ^TestConcurrent2B|| true
+=== RUN   TestConcurrent2B
+2025/05/05 22:25:50.972235 node.go:193: [0;37m[info] start raft store node, storeID: 1[0m
+2025/05/05 22:25:50.972516 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 >  create peer with ID 1[0m
+2025/05/05 22:25:50.972555 raftstore.go:174: [0;37m[info] start store 1, region_count 1, tombstone_count 0, takes 206.93µs[0m
+2025/05/05 22:25:50.973318 node.go:193: [0;37m[info] start raft store node, storeID: 2[0m
+2025/05/05 22:25:50.973380 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 >  create peer with ID 2[0m
+2025/05/05 22:25:50.973399 raftstore.go:174: [0;37m[info] start store 2, region_count 1, tombstone_count 0, takes 34.176µs[0m
+2025/05/05 22:25:50.974161 node.go:193: [0;37m[info] start raft store node, storeID: 3[0m
+2025/05/05 22:25:50.974216 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 >  create peer with ID 3[0m
+2025/05/05 22:25:50.974230 raftstore.go:174: [0;37m[info] start store 3, region_count 1, tombstone_count 0, takes 25.94µs[0m
+2025/05/05 22:25:50.974248 node.go:193: [0;37m[info] start raft store node, storeID: 4[0m
+2025/05/05 22:25:50.974274 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 >  create peer with ID 4[0m
+2025/05/05 22:25:50.974286 raftstore.go:174: [0;37m[info] start store 4, region_count 1, tombstone_count 0, takes 24.375µs[0m
+2025/05/05 22:25:50.974913 node.go:193: [0;37m[info] start raft store node, storeID: 5[0m
+2025/05/05 22:25:50.975491 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 >  create peer with ID 5[0m
+2025/05/05 22:25:50.975532 raftstore.go:174: [0;37m[info] start store 5, region_count 1, tombstone_count 0, takes 55.242µs[0m
+2025/05/05 22:25:51 len = 1
+2025/05/05 22:25:51 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:51 len = 1
+2025/05/05 22:25:51 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:51 len = 1
+2025/05/05 22:25:51 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:51 len = 1
+2025/05/05 22:25:51 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:51 id=3 len = 0
+2025/05/05 22:25:51 id=3 len = 0
+2025/05/05 22:25:51 len = 0
+2025/05/05 22:25:51 i = 6, firstIndex = 6, lastIndex = 6
+panic: runtime error: index out of range [0] with length 0
+
+goroutine 288 [running]:
+github.com/pingcap-incubator/tinykv/raft.(*Raft).sendAppend(0xc089ff94d0, 0x5)
+	/home/chris/code/tinykv/raft/raft.go:280 +0x530
+github.com/pingcap-incubator/tinykv/raft.(*Raft).handleAppendResponse(0xc089ff94d0, {0x4, 0x3, 0x2, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:757 +0x31d
+github.com/pingcap-incubator/tinykv/raft.(*Raft).LeaderStep(0xc089ff94d0, {0x4, 0x3, 0x2, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:552 +0x158
+github.com/pingcap-incubator/tinykv/raft.(*Raft).Step(0x0?, {0x4, 0x3, 0x2, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:583 +0x5d
+github.com/pingcap-incubator/tinykv/raft.(*RawNode).Step(0xc119da85a0, {0x4, 0x3, 0x2, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/rawnode.go:144 +0xd8
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).onRaftMsg(0xc0001ade20, 0xc000264f80)
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:745 +0x318
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).HandleMsg(0xc0001ade20, {0xc0001adec0?, 0x1?, {0xbb96c0?, 0xc000264f80?}})
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:513 +0x76
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*raftWorker).run(0xc0001468a0, 0xc089fe85b0, 0xc000012990?)
+	/home/chris/code/tinykv/kv/raftstore/raft_worker.go:54 +0x485
+created by github.com/pingcap-incubator/tinykv/kv/raftstore.(*Raftstore).startWorkers in goroutine 25
+	/home/chris/code/tinykv/kv/raftstore/raftstore.go:270 +0x152
+FAIL	github.com/pingcap-incubator/tinykv/kv/test_raftstore	1.342s
+FAIL
+GO111MODULE=on go test -v --count=1 --parallel=1 -p=1 ./kv/test_raftstore -run ^TestUnreliable2B|| true
+=== RUN   TestUnreliable2B
+2025/05/05 22:25:53.374264 node.go:193: [0;37m[info] start raft store node, storeID: 5[0m
+2025/05/05 22:25:53.374499 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 >  create peer with ID 5[0m
+2025/05/05 22:25:53.374536 raftstore.go:174: [0;37m[info] start store 5, region_count 1, tombstone_count 0, takes 174.901µs[0m
+2025/05/05 22:25:53.374771 node.go:193: [0;37m[info] start raft store node, storeID: 1[0m
+2025/05/05 22:25:53.374838 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 >  create peer with ID 1[0m
+2025/05/05 22:25:53.374876 raftstore.go:174: [0;37m[info] start store 1, region_count 1, tombstone_count 0, takes 61.19µs[0m
+2025/05/05 22:25:53.375105 node.go:193: [0;37m[info] start raft store node, storeID: 2[0m
+2025/05/05 22:25:53.375157 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 >  create peer with ID 2[0m
+2025/05/05 22:25:53.375181 raftstore.go:174: [0;37m[info] start store 2, region_count 1, tombstone_count 0, takes 37µs[0m
+2025/05/05 22:25:53.375569 node.go:193: [0;37m[info] start raft store node, storeID: 3[0m
+2025/05/05 22:25:53.375612 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 >  create peer with ID 3[0m
+2025/05/05 22:25:53.375636 raftstore.go:174: [0;37m[info] start store 3, region_count 1, tombstone_count 0, takes 36.278µs[0m
+2025/05/05 22:25:53.375858 node.go:193: [0;37m[info] start raft store node, storeID: 4[0m
+2025/05/05 22:25:53.375893 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 >  create peer with ID 4[0m
+2025/05/05 22:25:53.375905 raftstore.go:174: [0;37m[info] start store 4, region_count 1, tombstone_count 0, takes 24.3µs[0m
+2025/05/05 22:25:54 len = 1
+2025/05/05 22:25:54 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:54 len = 1
+2025/05/05 22:25:54 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:54 len = 1
+2025/05/05 22:25:54 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:54 len = 1
+2025/05/05 22:25:54 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:54 id=2 len = 0
+2025/05/05 22:25:54 id=2 len = 0
+2025/05/05 22:25:54 len = 0
+2025/05/05 22:25:54 i = 6, firstIndex = 6, lastIndex = 6
+panic: runtime error: index out of range [0] with length 0
+
+goroutine 257 [running]:
+github.com/pingcap-incubator/tinykv/raft.(*Raft).sendAppend(0xc0042c67e0, 0x4)
+	/home/chris/code/tinykv/raft/raft.go:280 +0x530
+github.com/pingcap-incubator/tinykv/raft.(*Raft).handleAppendResponse(0xc0042c67e0, {0x4, 0x2, 0x1, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:757 +0x31d
+github.com/pingcap-incubator/tinykv/raft.(*Raft).LeaderStep(0xc0042c67e0, {0x4, 0x2, 0x1, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:552 +0x158
+github.com/pingcap-incubator/tinykv/raft.(*Raft).Step(0x0?, {0x4, 0x2, 0x1, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:583 +0x5d
+github.com/pingcap-incubator/tinykv/raft.(*RawNode).Step(0xc0001067d0, {0x4, 0x2, 0x1, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/rawnode.go:144 +0xd8
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).onRaftMsg(0xc0001ade20, 0xc17c980800)
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:745 +0x318
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).HandleMsg(0xc0001ade20, {0xc0001adec0?, 0x1?, {0xbb96c0?, 0xc17c980800?}})
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:513 +0x76
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*raftWorker).run(0xc0000017e0, 0xc0001f0770, 0x0?)
+	/home/chris/code/tinykv/kv/raftstore/raft_worker.go:54 +0x485
+created by github.com/pingcap-incubator/tinykv/kv/raftstore.(*Raftstore).startWorkers in goroutine 15
+	/home/chris/code/tinykv/kv/raftstore/raftstore.go:270 +0x152
+FAIL	github.com/pingcap-incubator/tinykv/kv/test_raftstore	1.290s
+FAIL
+GO111MODULE=on go test -v --count=1 --parallel=1 -p=1 ./kv/test_raftstore -run ^TestOnePartition2B|| true
+=== RUN   TestOnePartition2B
+2025/05/05 22:25:55.759831 node.go:193: [0;37m[info] start raft store node, storeID: 4[0m
+2025/05/05 22:25:55.760309 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 4[0m
+2025/05/05 22:25:55.760343 raftstore.go:174: [0;37m[info] start store 4, region_count 1, tombstone_count 0, takes 190.624µs[0m
+2025/05/05 22:25:55.760410 node.go:193: [0;37m[info] start raft store node, storeID: 5[0m
+2025/05/05 22:25:55.760461 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 5[0m
+2025/05/05 22:25:55.760499 raftstore.go:174: [0;37m[info] start store 5, region_count 1, tombstone_count 0, takes 52.126µs[0m
+2025/05/05 22:25:55.760782 node.go:193: [0;37m[info] start raft store node, storeID: 1[0m
+2025/05/05 22:25:55.760849 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 1[0m
+2025/05/05 22:25:55.761114 raftstore.go:174: [0;37m[info] start store 1, region_count 1, tombstone_count 0, takes 281.778µs[0m
+2025/05/05 22:25:55.761159 node.go:193: [0;37m[info] start raft store node, storeID: 2[0m
+2025/05/05 22:25:55.761196 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 2[0m
+2025/05/05 22:25:55.761435 raftstore.go:174: [0;37m[info] start store 2, region_count 1, tombstone_count 0, takes 252.377µs[0m
+2025/05/05 22:25:55.761671 node.go:193: [0;37m[info] start raft store node, storeID: 3[0m
+2025/05/05 22:25:55.761737 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 3[0m
+2025/05/05 22:25:55.761763 raftstore.go:174: [0;37m[info] start store 3, region_count 1, tombstone_count 0, takes 37.754µs[0m
+2025/05/05 22:25:56 len = 1
+2025/05/05 22:25:56 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:56 len = 1
+2025/05/05 22:25:56 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:56 len = 1
+2025/05/05 22:25:56 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:56 len = 1
+2025/05/05 22:25:56 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:56 id=4 len = 0
+2025/05/05 22:25:56 id=4 len = 0
+2025/05/05 22:25:56 len = 0
+2025/05/05 22:25:56 i = 6, firstIndex = 6, lastIndex = 6
+panic: runtime error: index out of range [0] with length 0
+
+goroutine 251 [running]:
+github.com/pingcap-incubator/tinykv/raft.(*Raft).sendAppend(0xc0000fd200, 0x3)
+	/home/chris/code/tinykv/raft/raft.go:280 +0x530
+github.com/pingcap-incubator/tinykv/raft.(*Raft).handleAppendResponse(0xc0000fd200, {0x4, 0x4, 0x2, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:757 +0x31d
+github.com/pingcap-incubator/tinykv/raft.(*Raft).LeaderStep(0xc0000fd200, {0x4, 0x4, 0x2, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:552 +0x158
+github.com/pingcap-incubator/tinykv/raft.(*Raft).Step(0x0?, {0x4, 0x4, 0x2, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:583 +0x5d
+github.com/pingcap-incubator/tinykv/raft.(*RawNode).Step(0xc109b1c370, {0x4, 0x4, 0x2, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/rawnode.go:144 +0xd8
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).onRaftMsg(0xc000225e20, 0xc0002ad800)
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:745 +0x318
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).HandleMsg(0xc000225e20, {0xc000225ec0?, 0x1?, {0xbb96c0?, 0xc0002ad800?}})
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:513 +0x76
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*raftWorker).run(0xc0b929f0e0, 0xc000030cb0, 0xc000012690?)
+	/home/chris/code/tinykv/kv/raftstore/raft_worker.go:54 +0x485
+created by github.com/pingcap-incubator/tinykv/kv/raftstore.(*Raftstore).startWorkers in goroutine 44
+	/home/chris/code/tinykv/kv/raftstore/raftstore.go:270 +0x152
+FAIL	github.com/pingcap-incubator/tinykv/kv/test_raftstore	1.376s
+FAIL
+GO111MODULE=on go test -v --count=1 --parallel=1 -p=1 ./kv/test_raftstore -run ^TestManyPartitionsOneClient2B|| true
+=== RUN   TestManyPartitionsOneClient2B
+2025/05/05 22:25:58.266658 node.go:193: [0;37m[info] start raft store node, storeID: 2[0m
+2025/05/05 22:25:58.267132 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 2[0m
+2025/05/05 22:25:58.267208 raftstore.go:174: [0;37m[info] start store 2, region_count 1, tombstone_count 0, takes 405.864µs[0m
+2025/05/05 22:25:58.267458 node.go:193: [0;37m[info] start raft store node, storeID: 3[0m
+2025/05/05 22:25:58.267518 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 3[0m
+2025/05/05 22:25:58.267546 raftstore.go:174: [0;37m[info] start store 3, region_count 1, tombstone_count 0, takes 44.761µs[0m
+2025/05/05 22:25:58.267568 node.go:193: [0;37m[info] start raft store node, storeID: 4[0m
+2025/05/05 22:25:58.267593 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 4[0m
+2025/05/05 22:25:58.267622 raftstore.go:174: [0;37m[info] start store 4, region_count 1, tombstone_count 0, takes 37.849µs[0m
+2025/05/05 22:25:58.267867 node.go:193: [0;37m[info] start raft store node, storeID: 5[0m
+2025/05/05 22:25:58.267912 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 5[0m
+2025/05/05 22:25:58.267926 raftstore.go:174: [0;37m[info] start store 5, region_count 1, tombstone_count 0, takes 27.2µs[0m
+2025/05/05 22:25:58.268140 node.go:193: [0;37m[info] start raft store node, storeID: 1[0m
+2025/05/05 22:25:58.268196 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 1[0m
+2025/05/05 22:25:58.268220 raftstore.go:174: [0;37m[info] start store 1, region_count 1, tombstone_count 0, takes 35.743µs[0m
+2025/05/05 22:25:59 len = 1
+2025/05/05 22:25:59 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:59 len = 1
+2025/05/05 22:25:59 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:59 len = 1
+2025/05/05 22:25:59 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:59 len = 1
+2025/05/05 22:25:59 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:25:59 id=3 len = 0
+2025/05/05 22:25:59 id=3 len = 0
+2025/05/05 22:25:59 len = 0
+2025/05/05 22:25:59 i = 6, firstIndex = 6, lastIndex = 6
+panic: runtime error: index out of range [0] with length 0
+
+goroutine 284 [running]:
+github.com/pingcap-incubator/tinykv/raft.(*Raft).sendAppend(0xc17be1e480, 0x5)
+	/home/chris/code/tinykv/raft/raft.go:280 +0x530
+github.com/pingcap-incubator/tinykv/raft.(*Raft).handleAppendResponse(0xc17be1e480, {0x4, 0x3, 0x1, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:757 +0x31d
+github.com/pingcap-incubator/tinykv/raft.(*Raft).LeaderStep(0xc17be1e480, {0x4, 0x3, 0x1, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:552 +0x158
+github.com/pingcap-incubator/tinykv/raft.(*Raft).Step(0x0?, {0x4, 0x3, 0x1, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:583 +0x5d
+github.com/pingcap-incubator/tinykv/raft.(*RawNode).Step(0xc0000e6550, {0x4, 0x3, 0x1, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/rawnode.go:144 +0xd8
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).onRaftMsg(0xc0001abe20, 0xc000215e80)
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:745 +0x318
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).HandleMsg(0xc0001abe20, {0xc0001abec0?, 0x1?, {0xbb96c0?, 0xc000215e80?}})
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:513 +0x76
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*raftWorker).run(0xc16db66c80, 0xc0b929eee0, 0x0?)
+	/home/chris/code/tinykv/kv/raftstore/raft_worker.go:54 +0x485
+created by github.com/pingcap-incubator/tinykv/kv/raftstore.(*Raftstore).startWorkers in goroutine 39
+	/home/chris/code/tinykv/kv/raftstore/raftstore.go:270 +0x152
+FAIL	github.com/pingcap-incubator/tinykv/kv/test_raftstore	1.354s
+FAIL
+GO111MODULE=on go test -v --count=1 --parallel=1 -p=1 ./kv/test_raftstore -run ^TestManyPartitionsManyClients2B|| true
+=== RUN   TestManyPartitionsManyClients2B
+2025/05/05 22:26:00.609817 node.go:193: [0;37m[info] start raft store node, storeID: 1[0m
+2025/05/05 22:26:00.610033 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 >  create peer with ID 1[0m
+2025/05/05 22:26:00.610078 raftstore.go:174: [0;37m[info] start store 1, region_count 1, tombstone_count 0, takes 162.432µs[0m
+2025/05/05 22:26:00.610747 node.go:193: [0;37m[info] start raft store node, storeID: 2[0m
+2025/05/05 22:26:00.610837 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 >  create peer with ID 2[0m
+2025/05/05 22:26:00.610878 raftstore.go:174: [0;37m[info] start store 2, region_count 1, tombstone_count 0, takes 59.727µs[0m
+2025/05/05 22:26:00.611481 node.go:193: [0;37m[info] start raft store node, storeID: 3[0m
+2025/05/05 22:26:00.611538 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 >  create peer with ID 3[0m
+2025/05/05 22:26:00.611553 raftstore.go:174: [0;37m[info] start store 3, region_count 1, tombstone_count 0, takes 29.395µs[0m
+2025/05/05 22:26:00.612200 node.go:193: [0;37m[info] start raft store node, storeID: 4[0m
+2025/05/05 22:26:00.612246 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 >  create peer with ID 4[0m
+2025/05/05 22:26:00.612327 raftstore.go:174: [0;37m[info] start store 4, region_count 1, tombstone_count 0, takes 92.784µs[0m
+2025/05/05 22:26:00.612978 node.go:193: [0;37m[info] start raft store node, storeID: 5[0m
+2025/05/05 22:26:00.613025 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 >  create peer with ID 5[0m
+2025/05/05 22:26:00.613041 raftstore.go:174: [0;37m[info] start store 5, region_count 1, tombstone_count 0, takes 27.867µs[0m
+2025/05/05 22:26:01 len = 1
+2025/05/05 22:26:01 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:01 len = 1
+2025/05/05 22:26:01 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:01 len = 1
+2025/05/05 22:26:01 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:01 len = 1
+2025/05/05 22:26:01 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:01 id=2 len = 0
+2025/05/05 22:26:01 id=2 len = 0
+2025/05/05 22:26:01 len = 0
+2025/05/05 22:26:01 i = 6, firstIndex = 6, lastIndex = 6
+panic: runtime error: index out of range [0] with length 0
+
+goroutine 252 [running]:
+github.com/pingcap-incubator/tinykv/raft.(*Raft).sendAppend(0xc16dc3a510, 0x3)
+	/home/chris/code/tinykv/raft/raft.go:280 +0x530
+github.com/pingcap-incubator/tinykv/raft.(*Raft).handleAppendResponse(0xc16dc3a510, {0x4, 0x2, 0x1, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:757 +0x31d
+github.com/pingcap-incubator/tinykv/raft.(*Raft).LeaderStep(0xc16dc3a510, {0x4, 0x2, 0x1, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:552 +0x158
+github.com/pingcap-incubator/tinykv/raft.(*Raft).Step(0x0?, {0x4, 0x2, 0x1, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:583 +0x5d
+github.com/pingcap-incubator/tinykv/raft.(*RawNode).Step(0xc115ca85f0, {0x4, 0x2, 0x1, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/rawnode.go:144 +0xd8
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).onRaftMsg(0xc0001b1e20, 0xc115ceb100)
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:745 +0x318
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).HandleMsg(0xc0001b1e20, {0xc0001b1ec0?, 0x1?, {0xbb96c0?, 0xc115ceb100?}})
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:513 +0x76
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*raftWorker).run(0xc115d964e0, 0xc0002563f0, 0x0?)
+	/home/chris/code/tinykv/kv/raftstore/raft_worker.go:54 +0x485
+created by github.com/pingcap-incubator/tinykv/kv/raftstore.(*Raftstore).startWorkers in goroutine 41
+	/home/chris/code/tinykv/kv/raftstore/raftstore.go:270 +0x152
+FAIL	github.com/pingcap-incubator/tinykv/kv/test_raftstore	1.308s
+FAIL
+GO111MODULE=on go test -v --count=1 --parallel=1 -p=1 ./kv/test_raftstore -run ^TestPersistOneClient2B|| true
+=== RUN   TestPersistOneClient2B
+2025/05/05 22:26:02.981699 node.go:193: [0;37m[info] start raft store node, storeID: 2[0m
+2025/05/05 22:26:02.981981 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 2[0m
+2025/05/05 22:26:02.982061 raftstore.go:174: [0;37m[info] start store 2, region_count 1, tombstone_count 0, takes 240.313µs[0m
+2025/05/05 22:26:02.982519 node.go:193: [0;37m[info] start raft store node, storeID: 3[0m
+2025/05/05 22:26:02.982623 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 3[0m
+2025/05/05 22:26:02.982643 raftstore.go:174: [0;37m[info] start store 3, region_count 1, tombstone_count 0, takes 54.413µs[0m
+2025/05/05 22:26:02.982881 node.go:193: [0;37m[info] start raft store node, storeID: 4[0m
+2025/05/05 22:26:02.982950 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 4[0m
+2025/05/05 22:26:02.982979 raftstore.go:174: [0;37m[info] start store 4, region_count 1, tombstone_count 0, takes 42.798µs[0m
+2025/05/05 22:26:02.983372 node.go:193: [0;37m[info] start raft store node, storeID: 5[0m
+2025/05/05 22:26:02.983431 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 5[0m
+2025/05/05 22:26:02.983474 raftstore.go:174: [0;37m[info] start store 5, region_count 1, tombstone_count 0, takes 55.42µs[0m
+2025/05/05 22:26:02.983688 node.go:193: [0;37m[info] start raft store node, storeID: 1[0m
+2025/05/05 22:26:02.983747 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 1[0m
+2025/05/05 22:26:02.983773 raftstore.go:174: [0;37m[info] start store 1, region_count 1, tombstone_count 0, takes 44.707µs[0m
+2025/05/05 22:26:03 len = 1
+2025/05/05 22:26:03 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:03 len = 1
+2025/05/05 22:26:03 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:03 len = 1
+2025/05/05 22:26:03 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:03 len = 1
+2025/05/05 22:26:03 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:04 id=3 len = 0
+2025/05/05 22:26:04 id=3 len = 0
+2025/05/05 22:26:04 len = 0
+2025/05/05 22:26:04 len = 0
+2025/05/05 22:26:04 i = 6, firstIndex = 6, lastIndex = 6
+panic: runtime error: index out of range [0] with length 0
+
+goroutine 173 [running]:
+github.com/pingcap-incubator/tinykv/raft.(*Raft).sendAppend(0xc0002cf440, 0x2)
+	/home/chris/code/tinykv/raft/raft.go:280 +0x530
+github.com/pingcap-incubator/tinykv/raft.(*Raft).handleAppendResponse(0xc0002cf440, {0x4, 0x3, 0x4, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:757 +0x31d
+github.com/pingcap-incubator/tinykv/raft.(*Raft).LeaderStep(0xc0002cf440, {0x4, 0x3, 0x4, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:552 +0x158
+github.com/pingcap-incubator/tinykv/raft.(*Raft).Step(0x0?, {0x4, 0x3, 0x4, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:583 +0x5d
+github.com/pingcap-incubator/tinykv/raft.(*RawNode).Step(0xc0000d0730, {0x4, 0x3, 0x4, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/rawnode.go:144 +0xd8
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).onRaftMsg(0xc0001afe20, 0xc17c88ef80)
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:745 +0x318
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).HandleMsg(0xc0001afe20, {0xc0001afec0?, 0x1?, {0xbb96c0?, 0xc17c88ef80?}})
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:513 +0x76
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*raftWorker).run(0xc0fbda0400, 0xc0fbdfa150, 0x0?)
+	/home/chris/code/tinykv/kv/raftstore/raft_worker.go:54 +0x485
+created by github.com/pingcap-incubator/tinykv/kv/raftstore.(*Raftstore).startWorkers in goroutine 12
+	/home/chris/code/tinykv/kv/raftstore/raftstore.go:270 +0x152
+FAIL	github.com/pingcap-incubator/tinykv/kv/test_raftstore	1.272s
+FAIL
+GO111MODULE=on go test -v --count=1 --parallel=1 -p=1 ./kv/test_raftstore -run ^TestPersistConcurrent2B|| true
+=== RUN   TestPersistConcurrent2B
+2025/05/05 22:26:05.334141 node.go:193: [0;37m[info] start raft store node, storeID: 1[0m
+2025/05/05 22:26:05.334468 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 1[0m
+2025/05/05 22:26:05.334509 raftstore.go:174: [0;37m[info] start store 1, region_count 1, tombstone_count 0, takes 291.806µs[0m
+2025/05/05 22:26:05.334731 node.go:193: [0;37m[info] start raft store node, storeID: 2[0m
+2025/05/05 22:26:05.334776 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 2[0m
+2025/05/05 22:26:05.334790 raftstore.go:174: [0;37m[info] start store 2, region_count 1, tombstone_count 0, takes 25.345µs[0m
+2025/05/05 22:26:05.334994 node.go:193: [0;37m[info] start raft store node, storeID: 3[0m
+2025/05/05 22:26:05.335033 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 3[0m
+2025/05/05 22:26:05.335045 raftstore.go:174: [0;37m[info] start store 3, region_count 1, tombstone_count 0, takes 21.503µs[0m
+2025/05/05 22:26:05.335709 node.go:193: [0;37m[info] start raft store node, storeID: 4[0m
+2025/05/05 22:26:05.335764 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 4[0m
+2025/05/05 22:26:05.335794 raftstore.go:174: [0;37m[info] start store 4, region_count 1, tombstone_count 0, takes 43.261µs[0m
+2025/05/05 22:26:05.336415 node.go:193: [0;37m[info] start raft store node, storeID: 5[0m
+2025/05/05 22:26:05.336459 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 5[0m
+2025/05/05 22:26:05.336472 raftstore.go:174: [0;37m[info] start store 5, region_count 1, tombstone_count 0, takes 22.652µs[0m
+2025/05/05 22:26:06 len = 1
+2025/05/05 22:26:06 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:06 len = 1
+2025/05/05 22:26:06 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:06 len = 1
+2025/05/05 22:26:06 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:06 len = 1
+2025/05/05 22:26:06 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:06 id=2 len = 0
+2025/05/05 22:26:06 id=2 len = 0
+2025/05/05 22:26:06 len = 0
+2025/05/05 22:26:06 i = 6, firstIndex = 6, lastIndex = 6
+panic: runtime error: index out of range [0] with length 0
+
+goroutine 264 [running]:
+github.com/pingcap-incubator/tinykv/raft.(*Raft).sendAppend(0xc0720014d0, 0x4)
+	/home/chris/code/tinykv/raft/raft.go:280 +0x530
+github.com/pingcap-incubator/tinykv/raft.(*Raft).handleAppendResponse(0xc0720014d0, {0x4, 0x2, 0x3, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:757 +0x31d
+github.com/pingcap-incubator/tinykv/raft.(*Raft).LeaderStep(0xc0720014d0, {0x4, 0x2, 0x3, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:552 +0x158
+github.com/pingcap-incubator/tinykv/raft.(*Raft).Step(0x0?, {0x4, 0x2, 0x3, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:583 +0x5d
+github.com/pingcap-incubator/tinykv/raft.(*RawNode).Step(0xc00021e820, {0x4, 0x2, 0x3, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/rawnode.go:144 +0xd8
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).onRaftMsg(0xc0001ade20, 0xc17bdf2780)
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:745 +0x318
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).HandleMsg(0xc0001ade20, {0xc0001adec0?, 0x1?, {0xbb96c0?, 0xc17bdf2780?}})
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:513 +0x76
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*raftWorker).run(0xc0e3bcad20, 0xc0002e0700, 0x0?)
+	/home/chris/code/tinykv/kv/raftstore/raft_worker.go:54 +0x485
+created by github.com/pingcap-incubator/tinykv/kv/raftstore.(*Raftstore).startWorkers in goroutine 24
+	/home/chris/code/tinykv/kv/raftstore/raftstore.go:270 +0x152
+FAIL	github.com/pingcap-incubator/tinykv/kv/test_raftstore	1.488s
+FAIL
+GO111MODULE=on go test -v --count=1 --parallel=1 -p=1 ./kv/test_raftstore -run ^TestPersistConcurrentUnreliable2B|| true
+=== RUN   TestPersistConcurrentUnreliable2B
+2025/05/05 22:26:07.960412 node.go:193: [0;37m[info] start raft store node, storeID: 2[0m
+2025/05/05 22:26:07.960777 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 >  create peer with ID 2[0m
+2025/05/05 22:26:07.960842 raftstore.go:174: [0;37m[info] start store 2, region_count 1, tombstone_count 0, takes 329.579µs[0m
+2025/05/05 22:26:07.960907 node.go:193: [0;37m[info] start raft store node, storeID: 3[0m
+2025/05/05 22:26:07.960952 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 >  create peer with ID 3[0m
+2025/05/05 22:26:07.960965 raftstore.go:174: [0;37m[info] start store 3, region_count 1, tombstone_count 0, takes 24.035µs[0m
+2025/05/05 22:26:07.961146 node.go:193: [0;37m[info] start raft store node, storeID: 4[0m
+2025/05/05 22:26:07.961197 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 >  create peer with ID 4[0m
+2025/05/05 22:26:07.961213 raftstore.go:174: [0;37m[info] start store 4, region_count 1, tombstone_count 0, takes 28.892µs[0m
+2025/05/05 22:26:07.961426 node.go:193: [0;37m[info] start raft store node, storeID: 5[0m
+2025/05/05 22:26:07.961485 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 >  create peer with ID 5[0m
+2025/05/05 22:26:07.961514 raftstore.go:174: [0;37m[info] start store 5, region_count 1, tombstone_count 0, takes 46.795µs[0m
+2025/05/05 22:26:07.961737 node.go:193: [0;37m[info] start raft store node, storeID: 1[0m
+2025/05/05 22:26:07.961775 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 >  create peer with ID 1[0m
+2025/05/05 22:26:07.961787 raftstore.go:174: [0;37m[info] start store 1, region_count 1, tombstone_count 0, takes 23.536µs[0m
+2025/05/05 22:26:09 len = 1
+2025/05/05 22:26:09 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:09 len = 1
+2025/05/05 22:26:09 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:09 len = 1
+2025/05/05 22:26:09 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:09 len = 1
+2025/05/05 22:26:09 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:09 id=5 len = 0
+2025/05/05 22:26:09 id=5 len = 0
+2025/05/05 22:26:09 len = 0
+2025/05/05 22:26:09 len = 0
+2025/05/05 22:26:09 len = 0
+2025/05/05 22:26:09 i = 6, firstIndex = 6, lastIndex = 6
+panic: runtime error: index out of range [0] with length 0
+
+goroutine 294 [running]:
+github.com/pingcap-incubator/tinykv/raft.(*Raft).sendAppend(0xc0934e7c20, 0x3)
+	/home/chris/code/tinykv/raft/raft.go:280 +0x530
+github.com/pingcap-incubator/tinykv/raft.(*Raft).handleAppendResponse(0xc0934e7c20, {0x4, 0x5, 0x2, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:757 +0x31d
+github.com/pingcap-incubator/tinykv/raft.(*Raft).LeaderStep(0xc0934e7c20, {0x4, 0x5, 0x2, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:552 +0x158
+github.com/pingcap-incubator/tinykv/raft.(*Raft).Step(0x0?, {0x4, 0x5, 0x2, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:583 +0x5d
+github.com/pingcap-incubator/tinykv/raft.(*RawNode).Step(0xc0000e68c0, {0x4, 0x5, 0x2, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/rawnode.go:144 +0xd8
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).onRaftMsg(0xc0001afe20, 0xc08a0c0600)
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:745 +0x318
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).HandleMsg(0xc0001afe20, {0xc0001afec0?, 0x1?, {0xbb96c0?, 0xc08a0c0600?}})
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:513 +0x76
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*raftWorker).run(0xc093479680, 0xc00023d030, 0x0?)
+	/home/chris/code/tinykv/kv/raftstore/raft_worker.go:54 +0x485
+created by github.com/pingcap-incubator/tinykv/kv/raftstore.(*Raftstore).startWorkers in goroutine 24
+	/home/chris/code/tinykv/kv/raftstore/raftstore.go:270 +0x152
+FAIL	github.com/pingcap-incubator/tinykv/kv/test_raftstore	1.444s
+FAIL
+GO111MODULE=on go test -v --count=1 --parallel=1 -p=1 ./kv/test_raftstore -run ^TestPersistPartition2B|| true
+=== RUN   TestPersistPartition2B
+2025/05/05 22:26:10.529636 node.go:193: [0;37m[info] start raft store node, storeID: 1[0m
+2025/05/05 22:26:10.529950 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 1[0m
+2025/05/05 22:26:10.530000 raftstore.go:174: [0;37m[info] start store 1, region_count 1, tombstone_count 0, takes 254.183µs[0m
+2025/05/05 22:26:10.530229 node.go:193: [0;37m[info] start raft store node, storeID: 2[0m
+2025/05/05 22:26:10.530292 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 2[0m
+2025/05/05 22:26:10.530326 raftstore.go:174: [0;37m[info] start store 2, region_count 1, tombstone_count 0, takes 50.686µs[0m
+2025/05/05 22:26:10.530552 node.go:193: [0;37m[info] start raft store node, storeID: 3[0m
+2025/05/05 22:26:10.530604 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 3[0m
+2025/05/05 22:26:10.530619 raftstore.go:174: [0;37m[info] start store 3, region_count 1, tombstone_count 0, takes 29.236µs[0m
+2025/05/05 22:26:10.530820 node.go:193: [0;37m[info] start raft store node, storeID: 4[0m
+2025/05/05 22:26:10.530856 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 4[0m
+2025/05/05 22:26:10.530870 raftstore.go:174: [0;37m[info] start store 4, region_count 1, tombstone_count 0, takes 24.328µs[0m
+2025/05/05 22:26:10.531069 node.go:193: [0;37m[info] start raft store node, storeID: 5[0m
+2025/05/05 22:26:10.531131 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 5[0m
+2025/05/05 22:26:10.531163 raftstore.go:174: [0;37m[info] start store 5, region_count 1, tombstone_count 0, takes 48.156µs[0m
+2025/05/05 22:26:11 len = 1
+2025/05/05 22:26:11 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:11 len = 1
+2025/05/05 22:26:11 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:11 len = 1
+2025/05/05 22:26:11 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:11 len = 1
+2025/05/05 22:26:11 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:11 id=4 len = 0
+2025/05/05 22:26:11 id=4 len = 0
+2025/05/05 22:26:11 len = 0
+2025/05/05 22:26:11 len = 0
+2025/05/05 22:26:11 i = 6, firstIndex = 6, lastIndex = 6
+panic: runtime error: index out of range [0] with length 0
+
+goroutine 315 [running]:
+github.com/pingcap-incubator/tinykv/raft.(*Raft).sendAppend(0xc0001cf8c0, 0x2)
+	/home/chris/code/tinykv/raft/raft.go:280 +0x530
+github.com/pingcap-incubator/tinykv/raft.(*Raft).handleAppendResponse(0xc0001cf8c0, {0x4, 0x4, 0x5, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:757 +0x31d
+github.com/pingcap-incubator/tinykv/raft.(*Raft).LeaderStep(0xc0001cf8c0, {0x4, 0x4, 0x5, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:552 +0x158
+github.com/pingcap-incubator/tinykv/raft.(*Raft).Step(0x0?, {0x4, 0x4, 0x5, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:583 +0x5d
+github.com/pingcap-incubator/tinykv/raft.(*RawNode).Step(0xc121d847d0, {0x4, 0x4, 0x5, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/rawnode.go:144 +0xd8
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).onRaftMsg(0xc0001ade20, 0xc08a01b300)
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:745 +0x318
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).HandleMsg(0xc0001ade20, {0xc0001adec0?, 0x1?, {0xbb96c0?, 0xc08a01b300?}})
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:513 +0x76
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*raftWorker).run(0xc08a0dac60, 0xc000249420, 0x0?)
+	/home/chris/code/tinykv/kv/raftstore/raft_worker.go:54 +0x485
+created by github.com/pingcap-incubator/tinykv/kv/raftstore.(*Raftstore).startWorkers in goroutine 27
+	/home/chris/code/tinykv/kv/raftstore/raftstore.go:270 +0x152
+FAIL	github.com/pingcap-incubator/tinykv/kv/test_raftstore	1.346s
+FAIL
+GO111MODULE=on go test -v --count=1 --parallel=1 -p=1 ./kv/test_raftstore -run ^TestPersistPartitionUnreliable2B|| true
+=== RUN   TestPersistPartitionUnreliable2B
+2025/05/05 22:26:12.942987 node.go:193: [0;37m[info] start raft store node, storeID: 1[0m
+2025/05/05 22:26:12.943999 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 1[0m
+2025/05/05 22:26:12.944072 raftstore.go:174: [0;37m[info] start store 1, region_count 1, tombstone_count 0, takes 964.318µs[0m
+2025/05/05 22:26:12.944827 node.go:193: [0;37m[info] start raft store node, storeID: 2[0m
+2025/05/05 22:26:12.944881 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 2[0m
+2025/05/05 22:26:12.944898 raftstore.go:174: [0;37m[info] start store 2, region_count 1, tombstone_count 0, takes 31.398µs[0m
+2025/05/05 22:26:12.945559 node.go:193: [0;37m[info] start raft store node, storeID: 3[0m
+2025/05/05 22:26:12.945605 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 3[0m
+2025/05/05 22:26:12.945619 raftstore.go:174: [0;37m[info] start store 3, region_count 1, tombstone_count 0, takes 26.78µs[0m
+2025/05/05 22:26:12.946777 node.go:193: [0;37m[info] start raft store node, storeID: 4[0m
+2025/05/05 22:26:12.946831 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 4[0m
+2025/05/05 22:26:12.946856 raftstore.go:174: [0;37m[info] start store 4, region_count 1, tombstone_count 0, takes 40.23µs[0m
+2025/05/05 22:26:12.946967 node.go:193: [0;37m[info] start raft store node, storeID: 5[0m
+2025/05/05 22:26:12.947005 peer.go:41: [0;37m[info] region id:1 region_epoch:<conf_ver:1 version:1 > peers:<id:1 store_id:1 > peers:<id:2 store_id:2 > peers:<id:3 store_id:3 > peers:<id:4 store_id:4 > peers:<id:5 store_id:5 >  create peer with ID 5[0m
+2025/05/05 22:26:12.947017 raftstore.go:174: [0;37m[info] start store 5, region_count 1, tombstone_count 0, takes 21.869µs[0m
+2025/05/05 22:26:13 len = 1
+2025/05/05 22:26:13 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:13 len = 1
+2025/05/05 22:26:13 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:13 len = 1
+2025/05/05 22:26:13 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:13 len = 1
+2025/05/05 22:26:13 i = 6, firstIndex = 6, lastIndex = 6
+2025/05/05 22:26:13 id=5 len = 0
+2025/05/05 22:26:13 id=5 len = 0
+2025/05/05 22:26:13 len = 0
+2025/05/05 22:26:13 i = 6, firstIndex = 6, lastIndex = 6
+panic: runtime error: index out of range [0] with length 0
+
+goroutine 301 [running]:
+github.com/pingcap-incubator/tinykv/raft.(*Raft).sendAppend(0xc17c7463f0, 0x3)
+	/home/chris/code/tinykv/raft/raft.go:280 +0x530
+github.com/pingcap-incubator/tinykv/raft.(*Raft).handleAppendResponse(0xc17c7463f0, {0x4, 0x5, 0x2, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:757 +0x31d
+github.com/pingcap-incubator/tinykv/raft.(*Raft).LeaderStep(0xc17c7463f0, {0x4, 0x5, 0x2, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:552 +0x158
+github.com/pingcap-incubator/tinykv/raft.(*Raft).Step(0x0?, {0x4, 0x5, 0x2, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/raft.go:583 +0x5d
+github.com/pingcap-incubator/tinykv/raft.(*RawNode).Step(0xc00014ee60, {0x4, 0x5, 0x2, 0x7, 0x0, 0x6, {0x0, 0x0, 0x0}, ...})
+	/home/chris/code/tinykv/raft/rawnode.go:144 +0xd8
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).onRaftMsg(0xc00022de20, 0xc000296880)
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:745 +0x318
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*peerMsgHandler).HandleMsg(0xc00022de20, {0xc00022dec0?, 0x1?, {0xbb96c0?, 0xc000296880?}})
+	/home/chris/code/tinykv/kv/raftstore/peer_msg_handler.go:513 +0x76
+github.com/pingcap-incubator/tinykv/kv/raftstore.(*raftWorker).run(0xc12b12bc20, 0xc0000319d0, 0x0?)
+	/home/chris/code/tinykv/kv/raftstore/raft_worker.go:54 +0x485
+created by github.com/pingcap-incubator/tinykv/kv/raftstore.(*Raftstore).startWorkers in goroutine 28
+	/home/chris/code/tinykv/kv/raftstore/raftstore.go:270 +0x152
+FAIL	github.com/pingcap-incubator/tinykv/kv/test_raftstore	0.811s
+FAIL
+rm -rf /tmp/*test-raftstore*

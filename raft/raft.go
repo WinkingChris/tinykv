@@ -266,15 +266,20 @@ func (r *Raft) sendAppend(to uint64) bool {
 	leader := r.id
 	committedIndex := r.RaftLog.committed
 	preLogTerm, err := r.RaftLog.Term(preLogIndex)
-
-	if err != nil || r.RaftLog.FirstIndex()-1 > preLogIndex {
-		r.sendSnapshot(to)
+	if err != nil {
+		if r.RaftLog.FirstIndex()-1 > preLogIndex {
+			r.sendSnapshot(to)
+		}
 		return false
 	}
 
+	firstIndex := r.RaftLog.FirstIndex()
+	lastIndex := r.RaftLog.LastIndex()
+
 	var entries []*pb.Entry
-	for i := pr.Next; i < r.RaftLog.LastIndex()+1; i++ {
-		entries = append(entries, &r.RaftLog.entries[i-r.RaftLog.FirstIndex()])
+	for i := pr.Next; i <= lastIndex; i++ {
+		//log.Printf("i = %d, firstIndex = %d, lastIndex = %d", i, firstIndex, lastIndex)
+		entries = append(entries, &r.RaftLog.entries[i-firstIndex])
 	}
 
 	msg := pb.Message{
@@ -340,7 +345,7 @@ func (r *Raft) sendRequestVote(to uint64) {
 }
 
 func (r *Raft) sendSnapshot(to uint64) {
-
+	// Your Code Here (2C).
 }
 
 // tick advances the internal logical clock by a single tick.
@@ -715,7 +720,7 @@ func (r *Raft) handleAppendEntries(m pb.Message) {
 		index := entry.Index
 		oldTerm, err := r.RaftLog.Term(index)
 		firstIndex, _ := r.RaftLog.storage.FirstIndex()
-		if index-firstIndex > uint64(len(r.RaftLog.entries)) {
+		if index-firstIndex > uint64(len(r.RaftLog.entries)) || index > r.RaftLog.LastIndex() {
 			r.RaftLog.entries = append(r.RaftLog.entries, *entry)
 		} else if oldTerm != entry.Term || err != nil {
 			if index < firstIndex {
@@ -745,6 +750,7 @@ func (r *Raft) handleAppendResponse(m pb.Message) {
 	r.Prs[m.From].Match = m.Index
 	r.Prs[m.From].Next = m.Index + 1
 
+	//log.Printf("id=%d len = %d", r.id, len(r.RaftLog.entries))
 	oldCommit := r.RaftLog.committed
 	r.updateCommitIndex()
 	if r.RaftLog.committed != oldCommit {

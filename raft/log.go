@@ -63,43 +63,39 @@ func newLog(storage Storage) *RaftLog {
 	if storage == nil {
 		log.Panic("storage must not be nil")
 	}
-	log := &RaftLog{
-		storage: storage,
-	}
 
 	firstIndex, _ := storage.FirstIndex()
 	lastIndex, _ := storage.LastIndex()
+	hardState, _, _ := storage.InitialState()
 	entries, _ := storage.Entries(firstIndex, lastIndex+1)
 
-	hardState, _, _ := storage.InitialState()
-	log.committed = hardState.Commit
-	log.applied = firstIndex - 1
-	log.stabled = lastIndex
-	log.entries = entries
-	log.pendingSnapshot = nil
-	log.lastAppend = math.MaxInt64
-	return log
+	raftLog := &RaftLog{
+		storage:         storage,
+		committed:       hardState.Commit,
+		applied:         firstIndex - 1,
+		stabled:         lastIndex,
+		entries:         entries,
+		pendingSnapshot: nil,
+		lastAppend:      math.MaxUint64,
+	}
+	return raftLog
 }
 
 // We need to compact the log entries in some point of time like
 // storage compact stabled log entries prevent the log entries
 // grow unlimitedly in memory
 func (l *RaftLog) maybeCompact() {
-	remainIndex, _ := l.storage.FirstIndex()
-	if len(l.entries) > 0 {
-		if remainIndex > l.LastIndex() {
-			l.entries = nil
-		} else if remainIndex >= l.FirstIndex() {
-			l.entries = l.entries[remainIndex-l.FirstIndex()+1:]
-		}
-	}
+	// Your Code Here (2C).
 }
 
 // allEntries return all the entries not compacted.
 // note, exclude any dummy entries from the return value.
 // note, this is one of the test stub functions you need to implement.
 func (l *RaftLog) allEntries() []pb.Entry {
-	return l.entries
+	if len(l.entries) > 0 {
+		return l.entries
+	}
+	return nil
 }
 
 // unstableEntries return all the unstable entries
@@ -119,10 +115,10 @@ func (l *RaftLog) unstableEntries() []pb.Entry {
 
 // nextEnts returns all the committed but not applied entries
 func (l *RaftLog) nextEnts() (ents []pb.Entry) {
+	firstIndex := l.FirstIndex()
+	appliedIndex := l.applied
+	committedIndex := l.committed
 	if len(l.entries) > 0 {
-		firstIndex := l.FirstIndex()
-		appliedIndex := l.applied
-		committedIndex := l.committed
 		if appliedIndex < committedIndex && appliedIndex >= firstIndex-1 && committedIndex >= firstIndex-1 && committedIndex <= l.LastIndex() {
 			return l.entries[appliedIndex-firstIndex+1 : committedIndex-firstIndex+1]
 		}
@@ -146,20 +142,23 @@ func (l *RaftLog) commitTo(toCommit uint64) {
 
 // LastIndex return the last index of the log entries
 func (l *RaftLog) LastIndex() uint64 {
-	if len(l.entries) > 0 {
-		return l.entries[len(l.entries)-1].Index
+	if len(l.entries) == 0 {
+		index, _ := l.storage.LastIndex()
+		return index
 	}
-	index, _ := l.storage.LastIndex()
-	return index
+	return l.entries[len(l.entries)-1].Index
 }
 
 // Term return the term of the entry in the given index
 func (l *RaftLog) Term(i uint64) (uint64, error) {
 	if len(l.entries) > 0 {
 		firstIndex := l.FirstIndex()
-		lastIndex := l.LastIndex()
-		if i >= firstIndex && i <= lastIndex {
-			return l.entries[i-firstIndex].Term, nil
+		if i >= firstIndex {
+			index := i - firstIndex
+			if index >= uint64(len(l.entries)) {
+				return 0, ErrUnavailable
+			}
+			return l.entries[index].Term, nil
 		}
 	}
 
