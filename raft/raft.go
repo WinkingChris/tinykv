@@ -345,7 +345,27 @@ func (r *Raft) sendRequestVote(to uint64) {
 }
 
 func (r *Raft) sendSnapshot(to uint64) {
-	// Your Code Here (2C).
+	var Snapshot pb.Snapshot
+	var err error
+	if !IsEmptySnap(r.RaftLog.pendingSnapshot) {
+		Snapshot = *r.RaftLog.pendingSnapshot
+	} else {
+		Snapshot, err = r.RaftLog.storage.Snapshot()
+	}
+
+	if err != nil {
+		return
+	}
+
+	msg := pb.Message{
+		MsgType:  pb.MessageType_MsgSnapshot,
+		Term:     r.Term,
+		From:     r.id,
+		To:       to,
+		Snapshot: &Snapshot,
+	}
+	r.msgs = append(r.msgs, msg)
+	r.Prs[to].Next = Snapshot.Metadata.Index + 1
 }
 
 // tick advances the internal logical clock by a single tick.
@@ -469,6 +489,8 @@ func (r *Raft) FollwerStep(m pb.Message) error {
 	case pb.MessageType_MsgRequestVote:
 		r.handleRequestVote(m)
 	case pb.MessageType_MsgRequestVoteResponse:
+	case pb.MessageType_MsgSnapshot:
+		r.handleSnapshot(m)
 	case pb.MessageType_MsgHeartbeat:
 		r.handleHeartbeat(m)
 	case pb.MessageType_MsgHeartbeatResponse:
@@ -517,6 +539,8 @@ func (r *Raft) CandidateStep(m pb.Message) error {
 		} else if 2*deny >= total {
 			r.becomeFollower(r.Term, None)
 		}
+	case pb.MessageType_MsgSnapshot:
+		r.handleSnapshot(m)
 	case pb.MessageType_MsgHeartbeat:
 		r.handleHeartbeat(m)
 	case pb.MessageType_MsgHeartbeatResponse:
@@ -555,7 +579,8 @@ func (r *Raft) LeaderStep(m pb.Message) error {
 	case pb.MessageType_MsgRequestVote:
 		r.handleRequestVote(m)
 	case pb.MessageType_MsgRequestVoteResponse:
-
+	case pb.MessageType_MsgSnapshot:
+		r.handleSnapshot(m)
 	case pb.MessageType_MsgHeartbeat:
 		r.handleHeartbeat(m)
 	case pb.MessageType_MsgHeartbeatResponse:
@@ -829,7 +854,62 @@ func (r *Raft) startElection() {
 
 // handleSnapshot handle Snapshot RPC request
 func (r *Raft) handleSnapshot(m pb.Message) {
-	// Your Code Here (2C).
+	if r.Term < m.Term {
+		r.Term = m.Term
+		if r.State != StateFollower {
+			r.becomeFollower(r.Term, None)
+		}
+	}
+	if m.Term < r.Term {
+		return
+	}
+
+	metaData := m.Snapshot.Metadata
+	shotIndex := metaData.Index
+	shotTerm := metaData.Term
+	shotConf := metaData.ConfState
+
+	if shotIndex < r.RaftLog.committed || shotIndex < r.RaftLog.FirstIndex() {
+		return
+	}
+
+	if r.Lead != m.From {
+		r.Lead = m.From
+	}
+
+	if len(r.RaftLog.entries) > 0 {
+		if shotIndex >= r.RaftLog.LastIndex() {
+			r.RaftLog.entries = nil
+		} else {
+			r.RaftLog.entries = r.RaftLog.entries[shotIndex-r.RaftLog.FirstIndex()+1:]
+		}
+	}
+
+	r.RaftLog.committed = shotIndex
+	r.RaftLog.applied = shotIndex
+	r.RaftLog.stabled = shotIndex
+
+	if shotConf != nil {
+		r.Prs = make(map[uint64]*Progress)
+		for _, node := range shotConf.Nodes {
+			r.Prs[node] = &Progress{
+				Match: 0,
+				Next:  r.RaftLog.LastIndex() + 1,
+			}
+		}
+	}
+
+	if r.RaftLog.LastIndex() < shotIndex {
+		entry := pb.Entry{
+			EntryType: pb.EntryType_EntryNormal,
+			Index:     shotIndex,
+			Term:      shotTerm,
+		}
+		r.RaftLog.entries = append(r.RaftLog.entries, entry)
+	}
+
+	r.RaftLog.pendingSnapshot = m.Snapshot
+	r.sendAppendResponse(false, m.From, r.RaftLog.LastIndex())
 }
 
 func (r *Raft) softState() *SoftState {
